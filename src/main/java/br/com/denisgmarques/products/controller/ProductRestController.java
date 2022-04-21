@@ -1,22 +1,16 @@
-package br.com.acme.products.controller;
+package br.com.denisgmarques.products.controller;
+
+import br.com.denisgmarques.products.dto.ProductDTO;
+import br.com.denisgmarques.products.model.Image;
+import br.com.denisgmarques.products.model.Product;
+import br.com.denisgmarques.products.repository.ImageRepository;
+import br.com.denisgmarques.products.repository.ProductRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.com.acme.products.dto.ProductDTO;
-import br.com.acme.products.model.Image;
-import br.com.acme.products.model.Product;
-import br.com.acme.products.repository.ImageRepository;
-import br.com.acme.products.repository.ProductRepository;
 
 @RestController
 public class ProductRestController extends BaseRestController {
@@ -30,12 +24,12 @@ public class ProductRestController extends BaseRestController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@RequestMapping(value = "/products", method = RequestMethod.GET)
+	@GetMapping(value = "/products")
 	public @ResponseBody List<Product> getAllProducts() {
 		return productRep.findAll();
 	}
 	
-	@RequestMapping(value = "/products/full", method = RequestMethod.GET)
+	@GetMapping(value = "/products/full")
 	public @ResponseBody List<ProductDTO> getAllProductsCascade() {
 		List<Product> products = productRep.findAll();
 		
@@ -52,14 +46,14 @@ public class ProductRestController extends BaseRestController {
 		return dtos;
 	}
 
-	@RequestMapping(value = "/products/{id}", method = RequestMethod.GET)
+	@GetMapping(value = "/products/{id}")
 	public @ResponseBody Product showProduct(@PathVariable Long id) {
-		return productRep.findOne(id);
+		return productRep.getOne(id);
 	}
 	
-	@RequestMapping(value = "/products/{id}/full", method = RequestMethod.GET)
+	@GetMapping(value = "/products/{id}/full")
 	public @ResponseBody ProductDTO showFullProduct(@PathVariable Long id) {
-		Product product = productRep.findOne(id);
+		Product product = productRep.getOne(id);
 		ProductDTO pdto = modelMapper.map(product, ProductDTO.class);
 		
 		if (product != null) {
@@ -70,26 +64,26 @@ public class ProductRestController extends BaseRestController {
 		return pdto;
 	}
 	
-	@RequestMapping(value = "/products/{id}/images", method = RequestMethod.GET)
+	@GetMapping(value = "/products/{id}/images")
 	public @ResponseBody List<Image> showImagesFromProduct(@PathVariable Long id) {
-		Product product = productRep.findOne(id);
+		Product product = productRep.getOne(id);
 		return imageRep.findByProduct(product);
 	}
 	
-	@RequestMapping(value = "/products/{id}/childs", method = RequestMethod.GET)
+	@GetMapping(value = "/products/{id}/childs")
 	public @ResponseBody List<Product> showChildsFromProduct(@PathVariable Long id) {
-		Product product = productRep.findOne(id);
+		Product product = productRep.getOne(id);
 		return productRep.findChilds(product);
 	}
 
-	@RequestMapping(value = "/products", method = RequestMethod.POST)
+	@PostMapping(value = "/products")
 	public @ResponseBody Product insertProduct(@RequestBody Product product) {
 		return productRep.save(product);
 	}
 
-	@RequestMapping(value = "/products/{id}", method = RequestMethod.PUT)
+	@PutMapping(value = "/products/{id}")
 	public @ResponseBody String updateProduct(@PathVariable Long id, @RequestBody Product product) {
-		Product storedProduct = productRep.findOne(id);
+		Product storedProduct = productRep.getOne(id);
 		storedProduct.setName(product.getName());
 		storedProduct.setDescription(product.getDescription());
 		storedProduct.setParent(product.getParent());
@@ -98,9 +92,9 @@ public class ProductRestController extends BaseRestController {
 		return "{ 'message' : 'Product updated successfully' }";
 	}
 
-	@RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/products/{id}")
 	public @ResponseBody String deleteProduct(@PathVariable Long id) {
-		productRep.delete(id);
+		productRep.deleteById(id);
 		return "{ 'message' : 'Product deleted successfully' }";
 	}
 }

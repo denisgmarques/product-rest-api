@@ -1,30 +1,33 @@
-package br.com.acme.products;
+package br.com.denisgmarques.products;
 
-import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-
+import com.github.dzieciou.testing.curl.CurlRestAssuredConfigFactory;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.response.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.jayway.restassured.response.Response;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = br.com.acme.products.Configuration.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Configuration.class)
 public class ProductApiTest {
 	
 	@LocalServerPort
-	int port;
+	private int port;
+
+	private RestAssuredConfig config = CurlRestAssuredConfigFactory.createConfig();
 
 	@Test
-	public void test001_productInsertUpdate() throws InterruptedException, JSONException {
+	public void test001_productInsertUpdate() throws JSONException {
 
 		//////////////////////////////////////////
 		// Post kit and get generated product json #1
@@ -33,7 +36,7 @@ public class ProductApiTest {
 				.put("description", "This Kit is Essential")
 				.put("name", "Kit Mouse Razer Chroma + Mouse Pad");
 
-		Response response = given().port(port).contentType("application/json")
+		Response response = given().config(config).port(port).contentType("application/json")
 		.body(kit.toString())
 		.when()
 			.post("/api/products")
@@ -51,7 +54,7 @@ public class ProductApiTest {
 				.put("name", "Mouse Razer Chroma")
 				.put("parent", kitJson);
 		
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(mouse.toString())
 		.when()
 			.post("/api/products")
@@ -66,7 +69,7 @@ public class ProductApiTest {
 				.put("name", "Mouse pad gamer")
 				.put("parent", kitJson);
 		
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(mousePad.toString())
 		.when()
 			.post("/api/products")
@@ -80,7 +83,7 @@ public class ProductApiTest {
 				.put("description", "This product is unuseful")
 				.put("name", "To be deleted");
 		
-		response = given().port(port).contentType("application/json")
+		response = given().config(config).port(port).contentType("application/json")
 		.body(anyProd.toString())
 		.when()
 			.post("/api/products")
@@ -92,7 +95,7 @@ public class ProductApiTest {
 		anyProd = new JSONObject(response.body().asString());
 		anyProd.put("parent", kitJson);
 		
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(anyProd.toString())
 		.when()
 			.put("/api/products/4")
@@ -104,7 +107,7 @@ public class ProductApiTest {
 	@Test
 	public void test002_productListAll() {
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products")
 		.then()
@@ -117,7 +120,7 @@ public class ProductApiTest {
 	@Test
 	public void test003_productListAllChildFromKit() {
 
-		Response response = given().port(port).contentType("application/json")
+		Response response = given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products/1/childs")
 		.then()
@@ -130,9 +133,9 @@ public class ProductApiTest {
 	}	
 
 	@Test
-	public void test4_getFirstProduct() throws JSONException {
+	public void test004_getFirstProduct() {
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products/1")
 		.then()
@@ -141,17 +144,17 @@ public class ProductApiTest {
 	}
 	
 	@Test
-	public void test005_deleteProduct() throws JSONException {
+	public void test005_deleteProduct() {
 
 		// Delete
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.delete("/api/products/4")
 		.then()
 			.statusCode(200);
 		
 		// Check count
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products")
 		.then()
@@ -162,7 +165,7 @@ public class ProductApiTest {
 	}
 	
 	@Test
-	public void test006_imageInsertUpdate() throws InterruptedException, JSONException {
+	public void test006_imageInsertUpdate() throws JSONException {
 
 		//////////////////////////////////////////
 		// Post kit product image json #1
@@ -182,21 +185,21 @@ public class ProductApiTest {
 				.put("type", "Front view")
 				.put("product", kit);
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(img1.toString())
 		.when()
 			.post("/api/images")
 		.then()
 			.statusCode(200);
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(img2.toString())
 		.when()
 			.post("/api/images")
 		.then()
 			.statusCode(200);
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(img3.toString())
 		.when()
 			.post("/api/images")
@@ -208,7 +211,7 @@ public class ProductApiTest {
 	@Test
 	public void test007_imageListAll() {
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/images")
 		.then()
@@ -221,7 +224,7 @@ public class ProductApiTest {
 	@Test
 	public void test008_imagesFromProduct() {
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products/1/images")
 		.then()
@@ -242,7 +245,7 @@ public class ProductApiTest {
 				.put("type", "Backside view")
 				.put("product", mouse);
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.body(img1.toString())
 		.when()
 			.put("/api/images/1")
@@ -254,7 +257,7 @@ public class ProductApiTest {
 	@Test
 	public void test010_imagesFromProductAfterUpdate() {
 
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products/1/images")
 		.then()
@@ -262,7 +265,7 @@ public class ProductApiTest {
 			.and()
 			.body("size()", equalTo(2));
 		
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/products/2/images")
 		.then()
@@ -273,17 +276,17 @@ public class ProductApiTest {
 	}
 	
 	@Test
-	public void test011_deleteImage() throws JSONException {
+	public void test011_deleteImage() {
 
 		// Delete
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.delete("/api/images/1")
 		.then()
 			.statusCode(200);
 		
 		// Check count
-		given().port(port).contentType("application/json")
+		given().config(config).port(port).contentType("application/json")
 		.when()
 			.get("/api/images")
 		.then()

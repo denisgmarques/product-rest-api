@@ -1,4 +1,4 @@
-package br.com.acme.products;
+package br.com.denisgmarques.products;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ public class SwaggerConfig {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("br.com.acme.products.controller"))
+                .apis(RequestHandlerSelectors.basePackage("br.com.denisgmarques.products.controller"))
                 .paths(PathSelectors.regex("/api/.*"))
                 .build();
     }

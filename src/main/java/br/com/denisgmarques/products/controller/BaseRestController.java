@@ -1,4 +1,4 @@
-package br.com.acme.products.controller;
+package br.com.denisgmarques.products.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 

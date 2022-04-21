@@ -1,4 +1,4 @@
-package br.com.acme.products;
+package br.com.denisgmarques.products;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;

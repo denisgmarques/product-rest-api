@@ -1,13 +1,12 @@
-package br.com.acme.products.repository;
+package br.com.denisgmarques.products.repository;
 
-import java.util.List;
-
+import br.com.denisgmarques.products.model.Image;
+import br.com.denisgmarques.products.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import br.com.acme.products.model.Image;
-import br.com.acme.products.model.Product;
+import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long>{
 	

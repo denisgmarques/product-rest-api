@@ -1,11 +1,11 @@
-package br.com.acme.products.dto;
+package br.com.denisgmarques.products.dto;
+
+import br.com.denisgmarques.products.model.Image;
+import br.com.denisgmarques.products.model.Product;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.acme.products.model.Image;
-import br.com.acme.products.model.Product;
 
 public class ProductDTO implements Serializable {
 
