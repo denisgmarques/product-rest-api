@@ -11,7 +11,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootConfiguration
-@ComponentScan("br.com.acme.products.controller")
+@ComponentScan("br.com.denisgmarques.products.controller")
 @EnableSwagger2
 public class SwaggerConfig {
 
